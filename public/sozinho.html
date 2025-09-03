@@ -95,12 +95,12 @@
                   <span class="card-title mb-0">Banca Atual</span>
                 </div>
                 <!-- Valor atualizado via JS (id card-banca-valor) -->
-                <h3 class="mb-1" id="card-banca-valor">R$ 5.420,00</h3>
+                <h3 class="mb-1" id="card-banca-valor">R$ 0,00</h3>
                 <div class="small">
                   Variação no mês:
                   <!-- Vem do JS e alterna classe de cor conforme positivo/negativo -->
                   <span class="fw-semibold text-success" id="card-banca-var"
-                    >+R$ 320,00 (+6,27%)</span
+                    >+R$ 0,00 (+0%)</span
                   >
                 </div>
               </div>
@@ -119,12 +119,12 @@
                 </div>
                 <div class="mb-1">
                   <!-- Badges atualizadas via JS (ids card-wins e card-losses) -->
-                  <span class="badge bg-success" id="card-wins">12 WIN</span>
-                  <span class="badge bg-danger" id="card-losses">5 LOSS</span>
+                  <span class="badge bg-success" id="card-wins">0 WIN</span>
+                  <span class="badge bg-danger" id="card-losses">0 LOSS</span>
                 </div>
                 <div class="small">
                   Taxa de acerto:
-                  <span class="fw-semibold" id="card-hit-rate">70,6%</span>
+                  <span class="fw-semibold" id="card-hit-rate">0%</span>
                 </div>
               </div>
             </div>
@@ -141,11 +141,11 @@
                   <span class="card-title mb-0">Lucro (Mês)</span>
                 </div>
                 <!-- Atualizado via JS (id card-lucro-valor) -->
-                <h3 class="mb-1" id="card-lucro-valor">+R$ 320,00</h3>
+                <h3 class="mb-1" id="card-lucro-valor">R$ 0,00</h3>
                 <div class="small">
                   Payout médio:
                   <!-- Placeholder; cálculo não implementado no JS ainda -->
-                  <span class="fw-semibold" id="card-payout">82%</span>
+                  <span class="fw-semibold" id="card-payout">0%</span>
                 </div>
               </div>
             </div>
@@ -162,9 +162,9 @@
                 <span class="card-title mb-0 d-block">Sequência Atual</span>
                 <div class="d-flex align-items-baseline gap-2">
                   <!-- Preenchido via JS (id card-streak-current) -->
-                  <h4 class="mb-0" id="card-streak-current">3 WIN</h4>
+                  <h4 class="mb-0" id="card-streak-current">0 WIN</h4>
                   <span class="small text-muted"
-                    >máx: <span id="card-streak-max">6 WIN</span></span
+                    >máx: <span id="card-streak-max">0 WIN</span></span
                   >
                 </div>
               </div>
@@ -180,7 +180,9 @@
               <div class="w-100">
                 <span class="card-title mb-0 d-block">Risco por Trade</span>
                 <h4 class="mb-1" id="card-risk-trade">2%</h4>
-                <div class="small text-muted">Recomendado: 1%–2%</div>
+                <div class="small text-muted" id="card-recommended-value">
+                  Recomendado valor: R$ 2,00
+                </div>
               </div>
             </div>
           </div>
@@ -195,9 +197,9 @@
                 <span class="card-title mb-0 d-block">Média por Operação</span>
                 <!-- Preenchido via JS (id card-avg-amount) -->
                 <h4 class="mb-1">
-                  <span id="card-avg-amount">R$ 45,20</span>
+                  <span id="card-avg-amount">R$ 0,00</span>
                 </h4>
-                <div class="small text-muted">30 ops no mês</div>
+                <div class="small text-muted">Quantidade operações: 0</div>
               </div>
             </div>
           </div>
@@ -219,19 +221,21 @@
                   >
                   <!-- Lucro/Prejuízo (cor varia via JS) -->
                   <strong class="text-success" id="card-last-profit"
-                    >+R$ 40,00</strong
+                    >+R$ 0,00</strong
                   >
                 </div>
                 <!-- Data/hora da última operação (preenchido via JS) -->
                 <div class="small text-muted" id="card-last-when">
-                  hoje, 10:42
+                  03/09/25 | 10:42
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div> <!-- fim row g-3 -->
-    </div> <!-- fim container-fluid -->
+      </div>
+      <!-- fim row g-3 -->
+    </div>
+    <!-- fim container-fluid -->
 
     <!-- Modal: Nova Operação -->
     <div class="modal fade" id="modalOperacao" tabindex="-1" aria-hidden="true">
@@ -263,6 +267,28 @@
                 />
               </div>
 
+              <!-- Campo: Payout (%) -->
+              <div class="mb-3">
+                <label class="form-label" for="inPayout">Payout (%)</label>
+                <div class="input-group">
+                  <input
+                    type="number"
+                    id="inPayout"
+                    class="form-control"
+                    placeholder="ex: 82"
+                    min="0"
+                    max="100"
+                    step="0.01"
+                    inputmode="decimal"
+                    required
+                  />
+                  <span class="input-group-text">%</span>
+                </div>
+                <div class="form-text formMsg">
+                  Digite um número entre 0 e 100. Ex.: 82 = 82%
+                </div>
+              </div>
+
               <!-- Campo: Resultado (WIN/LOSS) -->
               <div class="mb-3">
                 <label class="form-label">Resultado</label>
@@ -276,12 +302,14 @@
               <!-- Campo opcional: Operacional/estratégia -->
               <div class="mb-3">
                 <label class="form-label">Operacional</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="inStrategy"
-                  placeholder="ex: M5, Pullback"
-                />
+                <select class="form-select" id="inOperacional" required>
+                  <option value="">Selecione...</option>
+                  <option value="Retracao">Retração</option>
+                  <option value="FalsoRompimento">Falso Rompimento</option>
+                  <option value="Pullback">Pullback</option>
+                  <option value="Consolidacao">Consolidação</option>
+                  <option value="M1">M1</option>
+                </select>
               </div>
 
               <!-- Campo opcional: Descrição livre -->
@@ -322,6 +350,6 @@
     ></script>
 
     <!-- Seu script principal (usa ids declarados nos elementos acima) -->
-    <script src="/script/script.js"></script>
+    <script src="/script/sozinho.js"></script>
   </body>
 </html>
